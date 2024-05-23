@@ -1,12 +1,10 @@
 import cv2
-import time
+# import time
 from datetime import datetime
 from PIL import Image
 import numpy as np
 import torch
 import asyncio
-
-# from sentence_transformers import SentenceTransformer
 from transformers import BertModel, BertTokenizer
 from vector_db import vector_db_class
 from img_description import gen_description
