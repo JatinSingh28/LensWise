@@ -12,7 +12,7 @@ class vector_db_class:
 
     async def upload(self, embeddings, user_id, embedding_id, img_caption):
         try:
-            await self.index.upsert(
+            self.index.upsert(
                 vectors=[
                     {
                         "id": embedding_id,
@@ -31,7 +31,7 @@ class vector_db_class:
 
     async def search(self, embedding, user_id):
         try:
-            results = await self.index.query(
+            results = self.index.query(
                 vector=embedding,
                 top_k=5,
                 include_metadata=True,

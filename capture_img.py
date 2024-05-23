@@ -41,7 +41,7 @@ class LensWise:
     #     print(caption)
     #     return caption
 
-    def text_to_embedding(self, text: str) -> np.ndarray:
+    async def text_to_embedding(self, text: str) -> np.ndarray:
         inputs = self.embedding_tokenizer(text, return_tensors='pt', padding=True, truncation=True, max_length=512)
 
         with torch.no_grad():
@@ -49,14 +49,18 @@ class LensWise:
 
         embeddings = outputs.last_hidden_state
         sentence_embedding = torch.mean(embeddings, dim=1).squeeze().cpu().numpy()
+        
+        await asyncio.sleep(0)
 
         return sentence_embedding
 
-    def capture_img(self, time_interval: int = 30):
+    async def capture_img(self, time_interval: int = 30):
 
         if not self.cap.isOpened():
             print("Could not access camera")
             return
+        
+        tasks = []
 
         try:
             while True:
@@ -98,8 +102,8 @@ class LensWise:
 
                 # np.save(f"./embeddings/{current_time}", img_caption_embedding)
 
-                # await asyncio.sleep(time_interval)
-                time.sleep(time_interval)
+                await asyncio.sleep(time_interval)
+                # time.sleep(time_interval)
 
         except KeyboardInterrupt:
             print("Stopped by user.")
@@ -107,7 +111,7 @@ class LensWise:
         finally:
             self.cap.release()
             cv2.destroyAllWindows()
-
+        
     async def embed_and_upload(self, img_caption, current_time):
         print(img_caption)
         img_caption_embedding = await self.text_to_embedding(img_caption)
@@ -115,7 +119,7 @@ class LensWise:
             img_caption_embedding,
             user_id=self.user_id,
             embedding_id=str(current_time),
-            caption=img_caption,
+            img_caption=img_caption,
         )
 
     # def vqa(self, image_path: str, question: str):
@@ -130,19 +134,19 @@ class LensWise:
 
     #     return answer
 
-    def gen_answer(self, query):
+    async def gen_answer(self, query):
         try:
-            query_embedding = self.text_to_embedding(query).tolist()
-            result = self.db.search(query_embedding, user_id=self.user_id)
-            print(result)
-            # img_path = f"./images/{result.matches[0].id}"
-            # answer = self.vqa(img_path, query)
-            # return answer
+            query_embedding = await self.text_to_embedding(query)
+            query_embedding = query_embedding.tolist()
+            # print(query_embedding)
+            result = await self.db.search(query_embedding, user_id=self.user_id)
+            # print(result)
 
             context = ""
             for match in result.matches:
-                context += match.img_caption + " "
-            answer = answer_query(query, context)
+                context += match.metadata["img_caption"] + " "
+            # print(context)
+            answer = await answer_query(query, context)
             return answer
 
         except Exception as e:
@@ -150,7 +154,11 @@ class LensWise:
             return None
 
 
+async def main():
+    lenswise = LensWise()
+    # await lenswise.capture_img(200)
+    print(await lenswise.gen_answer("What is the man wearing"))
+    
 if __name__ == "__main__":
-    cap = LensWise()
-    cap.capture_img(60)
+    asyncio.run(main())
     # cap.gen_answer("What is the color of my clothes?")

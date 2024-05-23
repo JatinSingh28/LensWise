@@ -1,6 +1,6 @@
 import ollama
 
-def answer_query(query: str, context: str):
+async def answer_query(query: str, context: str):
     prompt = f"""
     You are given a detailed image description of multiple images as context and you have to answer the asked question:
     ----------

@@ -1,6 +1,8 @@
 import ollama
+import asyncio
 
-def gen_description(img_path: str):
+
+async def gen_description(img_path: str):
     with open(img_path, "rb") as file:
         response = ollama.chat(
             model="llava",
@@ -12,6 +14,7 @@ def gen_description(img_path: str):
                 }
             ],
         )
+    await asyncio.sleep(0)
     return response["message"]["content"]
 
 
