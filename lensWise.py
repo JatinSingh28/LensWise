@@ -1,4 +1,5 @@
 import cv2
+
 # import time
 from datetime import datetime
 from PIL import Image
@@ -99,16 +100,20 @@ class LensWise:
 
     async def gen_answer(self, query):
         try:
+            print("Generating Embedding")
             query_embedding = await self.text_to_embedding(query)
             query_embedding = query_embedding.tolist()
             # print(query_embedding)
+            print("Searching DB")
             result = await self.db.search(query_embedding, user_id=self.user_id)
             # print(result)
+            print("Data retrived from DB")
 
             context = ""
             for match in result.matches:
                 context += match.metadata["img_caption"] + " "
             # print(context)
+            print("LLM generating response")
             answer = await answer_query(query, context)
             return answer
 
@@ -120,7 +125,8 @@ class LensWise:
 async def main():
     lenswise = LensWise()
     # await lenswise.capture_img(200)
-    print(await lenswise.gen_answer("What is the man wearing"))
+    # print(await lenswise.gen_answer("What is the man wearing"))
+    print(await lenswise.gen_answer("What is the person doing"))
 
 
 if __name__ == "__main__":
