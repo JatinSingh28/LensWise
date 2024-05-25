@@ -16,9 +16,9 @@ class llm_class:
             sign = Login(self.email, self.passwd)
             cookies = sign.login()
             self.chatbot = hugchat.ChatBot(cookies=cookies.get_dict())
-            # self.chatbot.switch_llm(3) # for mistral 8*7B
+            self.chatbot.switch_llm(3) # for mistral 8*7B
             # self.chatbot.switch_llm(2) # for hfH4
-            self.chatbot.switch_llm(5)  # for gemma
+            # self.chatbot.switch_llm(5)  # for gemma
         except Exception as e:
             print("Invalid credentials huggingchat", e)
 
