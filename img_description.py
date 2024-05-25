@@ -3,7 +3,7 @@ import asyncio
 import time
 
 
-def gen_description(img_path: str):
+async def gen_description(img_path: str):
     with open(img_path, "rb") as file:
         print("Request sent to LLAVA")
         start_time = time.time()
@@ -24,4 +24,5 @@ def gen_description(img_path: str):
 
 
 if __name__ == "__main__":
-    print(gen_description(img_path="./kids.png"))
+    # print(gen_description(img_path="./kids.png"))
+    asyncio.run(gen_description(img_path="./kids.png"))

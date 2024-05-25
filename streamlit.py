@@ -8,7 +8,7 @@ import time
 
 async def main():
     st.title("Lens Wise")
-    user_id = 1
+    user_id = "v1"
 
     if "started" not in st.session_state:
         st.session_state.started = False
@@ -38,7 +38,9 @@ async def main():
             start_time = time.time()
             answer = await st.session_state.lenswise.gen_answer(query)
             elapsed_time = time.time() - start_time
-            print(f"Time taken: {elapsed_time: .2f} seconds")
+            # with st.expander("View context"):
+            #     st.write(context)
+            print(f"Time taken to answer query: {elapsed_time: .2f} seconds")
             st.success(answer)
         st.session_state.loading = False
         query = ""  

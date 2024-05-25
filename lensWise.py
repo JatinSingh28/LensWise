@@ -7,7 +7,10 @@ import torch
 import asyncio
 from transformers import BertModel, BertTokenizer
 from vector_db import vector_db_class
-from img_description import gen_description
+
+# from img_description import gen_description
+from llava import gen_description
+
 # from answer_query import answer_query
 import os
 from llm_hf import llm_class
@@ -44,7 +47,7 @@ class LensWise:
 
         return sentence_embedding
 
-    def capture_img(self, time_interval: int = 30):
+    async def capture_img(self, time_interval: int = 30):
 
         if not self.cap.isOpened():
             print("Could not access camera")
@@ -83,8 +86,8 @@ class LensWise:
                 # Check for completed tasks and remove them from the list
                 tasks = [t for t in tasks if not t.done()]
 
-                # await asyncio.sleep(time_interval)
-                time.sleep(time_interval)
+                await asyncio.sleep(time_interval)
+                # time.sleep(time_interval)
 
         except KeyboardInterrupt:
             print("Stopped by user.")
@@ -118,7 +121,8 @@ class LensWise:
             context = ""
             for match in result.matches:
                 context += match.metadata["img_caption"] + " "
-            # print(context)
+                
+            print(context)
             print("LLM generating response")
             # answer = await answer_query(query, context)
             answer = await self.llm.ask(query, context)
@@ -130,8 +134,8 @@ class LensWise:
 
 
 async def main():
-    lenswise = LensWise(3)
-    lenswise.capture_img(300)
+    lenswise = LensWise(4)
+    await lenswise.capture_img(20)
     # print(await lenswise.gen_answer("What is the man wearing"))
     # print(await lenswise.gen_answer("What is the person doing"))
 

@@ -24,6 +24,7 @@ class vector_db_class:
                     }
                 ]
             )
+            print("Embedding successfully uploaded to db")
             return True
         except Exception as e:
             print(f"Error uploading embedding: {e}")
