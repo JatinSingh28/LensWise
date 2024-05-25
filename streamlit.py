@@ -41,7 +41,7 @@ async def main():
             print(f"Time taken: {elapsed_time: .2f} seconds")
             st.success(answer)
         st.session_state.loading = False
-        query = ""
+        query = ""  
 
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 import cv2
-
-# import time
+import time
 from datetime import datetime
 from PIL import Image
 import numpy as np
@@ -9,8 +8,10 @@ import asyncio
 from transformers import BertModel, BertTokenizer
 from vector_db import vector_db_class
 from img_description import gen_description
-from answer_query import answer_query
+# from answer_query import answer_query
 import os
+from llm_hf import llm_class
+from dotenv import load_dotenv
 
 
 class LensWise:
@@ -23,6 +24,10 @@ class LensWise:
         self.model_name = "bert-base-uncased"
         self.embedding_tokenizer = BertTokenizer.from_pretrained(self.model_name)
         self.embedding_model = BertModel.from_pretrained(self.model_name)
+
+        load_dotenv()
+
+        self.llm = llm_class(os.getenv("hf_email"), os.getenv("hf_passwd"))
 
     async def text_to_embedding(self, text: str) -> np.ndarray:
         inputs = self.embedding_tokenizer(
@@ -39,7 +44,7 @@ class LensWise:
 
         return sentence_embedding
 
-    async def capture_img(self, time_interval: int = 30):
+    def capture_img(self, time_interval: int = 30):
 
         if not self.cap.isOpened():
             print("Could not access camera")
@@ -78,8 +83,8 @@ class LensWise:
                 # Check for completed tasks and remove them from the list
                 tasks = [t for t in tasks if not t.done()]
 
-                await asyncio.sleep(time_interval)
-                # time.sleep(time_interval)
+                # await asyncio.sleep(time_interval)
+                time.sleep(time_interval)
 
         except KeyboardInterrupt:
             print("Stopped by user.")
@@ -97,6 +102,7 @@ class LensWise:
             embedding_id=str(current_time),
             img_caption=img_caption,
         )
+        print("Image uploaded to DB")
 
     async def gen_answer(self, query):
         try:
@@ -114,7 +120,8 @@ class LensWise:
                 context += match.metadata["img_caption"] + " "
             # print(context)
             print("LLM generating response")
-            answer = await answer_query(query, context)
+            # answer = await answer_query(query, context)
+            answer = await self.llm.ask(query, context)
             return answer
 
         except Exception as e:
@@ -123,10 +130,10 @@ class LensWise:
 
 
 async def main():
-    lenswise = LensWise()
-    # await lenswise.capture_img(200)
+    lenswise = LensWise(3)
+    lenswise.capture_img(300)
     # print(await lenswise.gen_answer("What is the man wearing"))
-    print(await lenswise.gen_answer("What is the person doing"))
+    # print(await lenswise.gen_answer("What is the person doing"))
 
 
 if __name__ == "__main__":

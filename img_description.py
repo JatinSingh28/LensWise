@@ -1,9 +1,12 @@
 import ollama
 import asyncio
+import time
 
 
-async def gen_description(img_path: str):
+def gen_description(img_path: str):
     with open(img_path, "rb") as file:
+        print("Request sent to LLAVA")
+        start_time = time.time()
         response = ollama.chat(
             model="llava",
             messages=[
@@ -14,7 +17,9 @@ async def gen_description(img_path: str):
                 }
             ],
         )
-    await asyncio.sleep(0)
+        elapsed_time = time.time() - start_time
+        print(f"Time taken: {elapsed_time: .2f} seconds")
+
     return response["message"]["content"]
 
 
