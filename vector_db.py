@@ -6,8 +6,8 @@ load_dotenv()
 
 
 class vector_db_class:
-    def __init__(self) -> None:
-        self.pc = Pinecone(api_key=os.getenv("vec_db_key"))
+    def __init__(self, api_key=os.getenv("vec_db_key")) -> None:
+        self.pc = Pinecone(api_key)
         self.index = self.pc.Index("lens-wise-bert")
 
     async def upload(self, embeddings, user_id, embedding_id, img_caption):

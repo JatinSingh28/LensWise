@@ -18,19 +18,25 @@ from dotenv import load_dotenv
 
 
 class LensWise:
-    def __init__(self, user_id=1):
+    def __init__(
+        self,
+        user_id=1,
+        email=os.getenv("hf_email"),
+        passwd=os.getenv("hf_passwd"),
+        vec_db_key=os.getenv("vec_db_key"),
+    ):
         self.cap = cv2.VideoCapture(0)
 
-        self.db = vector_db_class()
+        load_dotenv()
+
+        self.db = vector_db_class(vec_db_key)
         self.user_id = user_id
 
         self.model_name = "bert-base-uncased"
         self.embedding_tokenizer = BertTokenizer.from_pretrained(self.model_name)
         self.embedding_model = BertModel.from_pretrained(self.model_name)
 
-        load_dotenv()
-
-        self.llm = llm_class(os.getenv("hf_email"), os.getenv("hf_passwd"))
+        self.llm = llm_class(email, passwd)
 
     async def text_to_embedding(self, text: str) -> np.ndarray:
         inputs = self.embedding_tokenizer(
@@ -121,7 +127,7 @@ class LensWise:
             context = ""
             for match in result.matches:
                 context += match.metadata["img_caption"] + " "
-                
+
             print(context)
             print("LLM generating response")
             # answer = await answer_query(query, context)

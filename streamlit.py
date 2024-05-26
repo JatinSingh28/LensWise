@@ -4,6 +4,7 @@ import os
 from PIL import Image
 import asyncio
 import time
+import os
 
 
 async def main():
@@ -17,7 +18,14 @@ async def main():
         st.session_state.loading = False
 
     if not st.session_state.started:
-        st.session_state.lenswise = LensWise(user_id)
+        st.session_state.lenswise = LensWise(
+            user_id,
+            st.secrets["hf_email"],
+            st.secrets["hf_passwd"],
+            st.secrets["vec_db_key"],
+        )
+        # replicate_key = st.secrets["REPLICATE_API_TOKEN"]
+        # os.environ["REPLICATE_API_TOKEN"] = replicate_key
         st.session_state.started = True
 
     IMAGE_FOLDER = f"./images/{user_id}"
@@ -43,7 +51,7 @@ async def main():
             print(f"Time taken to answer query: {elapsed_time: .2f} seconds")
             st.success(answer)
         st.session_state.loading = False
-        query = ""  
+        query = ""
 
 
 if __name__ == "__main__":
