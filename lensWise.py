@@ -1,4 +1,4 @@
-import cv2
+# import cv2
 import time
 from datetime import datetime
 from PIL import Image
@@ -25,7 +25,7 @@ class LensWise:
         passwd=os.getenv("hf_passwd"),
         vec_db_key=os.getenv("vec_db_key"),
     ):
-        self.cap = cv2.VideoCapture(0)
+        # self.cap = cv2.VideoCapture(0)
 
         load_dotenv()
 
@@ -53,54 +53,54 @@ class LensWise:
 
         return sentence_embedding
 
-    async def capture_img(self, time_interval: int = 30):
+    # async def capture_img(self, time_interval: int = 30):
 
-        if not self.cap.isOpened():
-            print("Could not access camera")
-            return
+    #     if not self.cap.isOpened():
+    #         print("Could not access camera")
+    #         return
 
-        tasks = []
+    #     tasks = []
 
-        try:
-            while True:
-                ret, frame = self.cap.read()
-                if not ret:
-                    print("Error: Could not read frame.")
-                    break
+    #     try:
+    #         while True:
+    #             ret, frame = self.cap.read()
+    #             if not ret:
+    #                 print("Error: Could not read frame.")
+    #                 break
 
-                current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    #             current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-                img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+    #             img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
-                if not os.path.exists(f"./images/{self.user_id}"):
-                    os.makedirs(f"./images/{self.user_id}")
-                img_path = f"./images/{self.user_id}/{current_time}.jpg"
-                img.save(img_path)
-                print(f"Captured and saved image: ./images/{current_time}.jpg")
+    #             if not os.path.exists(f"./images/{self.user_id}"):
+    #                 os.makedirs(f"./images/{self.user_id}")
+    #             img_path = f"./images/{self.user_id}/{current_time}.jpg"
+    #             img.save(img_path)
+    #             print(f"Captured and saved image: ./images/{current_time}.jpg")
 
-                # img_caption = self.generate_caption(img)
-                # img_caption = gen_description(img_path)
+    #             # img_caption = self.generate_caption(img)
+    #             # img_caption = gen_description(img_path)
 
-                task = asyncio.create_task(gen_description(img_path))
-                task.add_done_callback(
-                    lambda t: asyncio.create_task(
-                        self.embed_and_upload(t.result(), current_time)
-                    )
-                )
-                tasks.append(task)
+    #             task = asyncio.create_task(gen_description(img_path))
+    #             task.add_done_callback(
+    #                 lambda t: asyncio.create_task(
+    #                     self.embed_and_upload(t.result(), current_time)
+    #                 )
+    #             )
+    #             tasks.append(task)
 
-                # Check for completed tasks and remove them from the list
-                tasks = [t for t in tasks if not t.done()]
+    #             # Check for completed tasks and remove them from the list
+    #             tasks = [t for t in tasks if not t.done()]
 
-                await asyncio.sleep(time_interval)
-                # time.sleep(time_interval)
+    #             await asyncio.sleep(time_interval)
+    #             # time.sleep(time_interval)
 
-        except KeyboardInterrupt:
-            print("Stopped by user.")
+    #     except KeyboardInterrupt:
+    #         print("Stopped by user.")
 
-        finally:
-            self.cap.release()
-            cv2.destroyAllWindows()
+    #     finally:
+    #         self.cap.release()
+    #         cv2.destroyAllWindows()
 
     async def embed_and_upload(self, img_caption, current_time):
         print(img_caption)
