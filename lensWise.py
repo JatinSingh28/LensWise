@@ -146,6 +146,6 @@ async def main():
     # print(await lenswise.gen_answer("What is the person doing"))
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+# if __name__ == "__main__":
+#     asyncio.run(main())
     # cap.gen_answer("What is the color of my clothes?")
