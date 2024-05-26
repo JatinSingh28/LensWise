@@ -23,4 +23,3 @@ async def process(user_id=5):
 
 if __name__ == "__main__":
     asyncio.run(process("v1"))
-    # file_names = [f for os]
