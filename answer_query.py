@@ -2,7 +2,7 @@ import ollama
 
 async def answer_query(query: str, context: str):
     prompt = f"""
-    You are given a detailed image description of multiple images as context and you have to answer the asked question:
+    You are given a detailed image description of multiple images as context these images were taken by an smart glasses that clicks image every min and you have to answer the asked question:
     ----------
     Rules:
     1) Do not hallucinate. If you don't know the answer just tell that you don't have the record for that question.

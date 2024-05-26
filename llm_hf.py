@@ -6,13 +6,11 @@ from hugchat.login import Login
 
 # load_dotenv()
 
-
 class llm_class:
     def __init__(self, email, passwd):
         self.email = email
         self.passwd = passwd
         try:
-            # print(email, passwd)
             sign = Login(self.email, self.passwd)
             cookies = sign.login()
             self.chatbot = hugchat.ChatBot(cookies=cookies.get_dict())
@@ -24,7 +22,7 @@ class llm_class:
 
     async def ask(self, query: str, context: str):
         prompt = f"""
-        You are given a detailed image description of multiple images as context and you have to answer the asked question:
+        You are given a detailed image description of multiple images as context these images were taken by an smart glasses that clicks image every min and you have to answer the asked question:
         ----------
         Rules:
         1) Do not hallucinate. If you don't know the answer just tell that you don't have the record for that question.

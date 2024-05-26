@@ -34,7 +34,7 @@ class vector_db_class:
         try:
             results = self.index.query(
                 vector=embedding,
-                top_k=10,
+                top_k=6,
                 include_metadata=True,
                 filter={"user_id": str(user_id)},
             )
