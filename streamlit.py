@@ -7,7 +7,7 @@ import time
 import os
 
 
-async def main():
+def main():
     st.title("Lens Wise")
     user_id = "v1"
 
@@ -44,7 +44,7 @@ async def main():
 
         with st.spinner("Generating answer..."):
             start_time = time.time()
-            answer = await st.session_state.lenswise.gen_answer(query)
+            answer = asyncio.run(st.session_state.lenswise.gen_answer(query))
             elapsed_time = time.time() - start_time
             # with st.expander("View context"):
             #     st.write(context)
@@ -55,4 +55,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
